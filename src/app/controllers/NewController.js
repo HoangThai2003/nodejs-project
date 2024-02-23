@@ -9,9 +9,7 @@ class NewController {
             new sql.Request().query("SELECT * FROM student", (err, result) => {
                 if (err) {
                     console.error("Lỗi truy vấn:", err);
-                    return us(500).send(
-                        "Lỗi truy vấn dữ liệu từ cơ sở dữ liệu.",
-                    );
+                    return res.send("Lỗi truy vấn dữ liệu từ cơ sở dữ liệu.");
                 }
                 // Lấy data
                 let data = result.recordset;
@@ -51,7 +49,25 @@ class NewController {
         });
     }
     edit(req, res) {
-        res.render("users/edit");
+        sql.connect(config, (err) => {
+            //Câu lệnh sql
+            new sql.Request().query(
+                "SELECT * FROM student WHERE id = 1",
+                (err, result) => {
+                    if (err) {
+                        console.error("Lỗi truy vấn:", err);
+                        return res.send(
+                            "Lỗi truy vấn dữ liệu từ cơ sở dữ liệu.",
+                        );
+                    }
+                    // Lấy data
+                    let data = result.recordset;
+                    console.log(data);
+                    // Đẩy dữ liệu data ra ngoài
+                    res.render("users/edit", { data });
+                },
+            );
+        });
     }
 }
 

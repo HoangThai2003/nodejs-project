@@ -1,0 +1,24 @@
+<form method="POST" action="/news/store">
+    <h2>Cập nhật người dùng</h2>
+    <div class="mb-3 mt-2">
+        <label for="firstname" class="form-label">First Name</label>
+        <input
+            type="text"
+            class="form-control"
+            id="firstname"
+            name="firstname"
+            value="{{data.firstname}}"
+        />
+    </div>
+    <div class="mb-3">
+        <label for="lastname" class="form-label">Last Name</label>
+        <input
+            type="text"
+            class="form-control"
+            id="lastname"
+            name="lastname"
+            value="{{data.lastname}}"
+        />
+    </div>
+    <button type="submit" class="btn btn-primary">Sửa</button>
+</form>
