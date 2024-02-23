@@ -1,0 +1,52 @@
+<!-- users.hbs -->
+<h2>Danh sách người dùng</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Tên</th>
+            <th scope="col">Tên họ</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <a
+            name="create"
+            id=""
+            class="btn btn-primary"
+            href="/news/create"
+            role="button"
+        >Thêm</a>
+        {{#each data}}
+            <tr>
+                <th scope="row">{{id}}</th>
+                <td>{{firstname}}</td>
+                <td>{{lastname}}</td>
+                <td>
+                    <a
+                        name="status"
+                        id=""
+                        class="btn btn-info"
+                        href=""
+                        role="button"
+                    >Xem chi tiết</a>
+                    <a
+                        name="edit"
+                        id=""
+                        class="btn btn-warning"
+                        href="/news/{{id}}/edit"
+                        role="button"
+                    >Sửa</a>
+                    <a
+                        name="delete"
+                        id=""
+                        class="btn btn-danger"
+                        href="#"
+                        role="button"
+                    >Xóa</a>
+                </td>
+            </tr>
+
+        {{/each}}
+    </tbody>
+</table>
