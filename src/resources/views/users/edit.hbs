@@ -1,5 +1,12 @@
-<form method="POST" action="/news/store">
+<form method="POST" action="/news/{{id}}?_method=PUT">
     <h2>Cập nhật người dùng</h2>
+    <input
+        type="hidden"
+        class="form-control"
+        id="id"
+        name="id"
+        value="{{id}}"
+    />
     <div class="mb-3 mt-2">
         <label for="firstname" class="form-label">First Name</label>
         <input
@@ -7,7 +14,7 @@
             class="form-control"
             id="firstname"
             name="firstname"
-            value="{{data.firstname}}"
+            value="{{firstname}}"
         />
     </div>
     <div class="mb-3">
@@ -17,7 +24,7 @@
             class="form-control"
             id="lastname"
             name="lastname"
-            value="{{data.lastname}}"
+            value="{{lastname}}"
         />
     </div>
     <button type="submit" class="btn btn-primary">Sửa</button>

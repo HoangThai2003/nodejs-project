@@ -50,23 +50,67 @@ class NewController {
     }
     edit(req, res) {
         sql.connect(config, (err) => {
-            //Câu lệnh sql
-            new sql.Request().query(
-                "SELECT * FROM student WHERE id = 1",
-                (err, result) => {
-                    if (err) {
-                        console.error("Lỗi truy vấn:", err);
-                        return res.send(
-                            "Lỗi truy vấn dữ liệu từ cơ sở dữ liệu.",
-                        );
-                    }
-                    // Lấy data
-                    let data = result.recordset;
-                    console.log(data);
-                    // Đẩy dữ liệu data ra ngoài
-                    res.render("users/edit", { data });
-                },
-            );
+            // Câu lệnh sql
+            new sql.Request()
+                .input("firstname", sql.NVarChar, req.body.firstname)
+                .input("lastname", sql.NVarChar, req.body.lastname)
+                .input("id", sql.Int, req.params.id)
+                .query(
+                    "SELECT * FROM student WHERE id = @id",
+                    // UPDATE student SET firstname = @firstname, lastname = @lastname WHERE id = @id
+                    (err, result) => {
+                        if (err) {
+                            console.error("Lỗi truy vấn:", err);
+                            return res.send(
+                                "Lỗi truy vấn dữ liệu từ cơ sở dữ liệu.",
+                            );
+                        }
+                        // Lấy data
+                        let data = result.recordset[0];
+                        res.render("users/edit", data);
+                    },
+                );
+        });
+    }
+    update(req, res) {
+        sql.connect(config, (err) => {
+            // Câu lệnh sql
+            new sql.Request()
+                .input("firstname", sql.NVarChar, req.body.firstname)
+                .input("lastname", sql.NVarChar, req.body.lastname)
+                .input("id", sql.Int, req.params.id)
+                .query(
+                    "UPDATE student SET firstname = @firstname, lastname = @lastname WHERE id = @id",
+                    (err, result) => {
+                        if (err) {
+                            console.error("Lỗi truy vấn:", err);
+                            return res.send(
+                                "Lỗi truy vấn dữ liệu từ cơ sở dữ liệu.",
+                            );
+                        }
+                        res.redirect("/news");
+                    },
+                );
+        });
+    }
+
+    destroy(req, res) {
+        sql.connect(config, (err) => {
+            // Câu lệnh sql
+            new sql.Request()
+                .input("id", sql.Int, req.params.id)
+                .query(
+                    "DELETE * FROM student WHERE id = @id",
+                    (err, result) => {
+                        if (err) {
+                            console.error("Lỗi truy vấn:", err);
+                            return res.send(
+                                "Lỗi truy vấn dữ liệu từ cơ sở dữ liệu.",
+                            );
+                        }
+                        res.redirect("/news");
+                    },
+                );
         });
     }
 }
