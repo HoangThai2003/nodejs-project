@@ -1,22 +1,19 @@
-const sql = require("mssql");
+var mysql = require("mysql");
 
-// Cấu hình kết nối tới SQL Server
-const config = {
-    user: "sa",
-    password: "123",
-    server: "DESKTOP-KBM166O\\SQL2022",
-    database: "NodejsExamDatabase",
-    options: {
-        encrypt: false, // Nếu bạn sử dụng kết nối được mã hóa
-    },
-};
-
-sql.connect(config, (err) => {
-    if (err) {
-        console.error("Lỗi kết nối:", err);
-        return;
-    }
-    console.log("Kết nối thành công tới SQL Server.");
+var con = mysql.createConnection({
+    host: "192.168.10.225",
+    user: "vdsi",
+    password: "Vdsi@2023",
+    database: "vebus_log",
 });
 
-module.exports = { config };
+con.connect(function (err) {
+    if (err) throw err;
+    con.query(
+        "SELECT * FROM TicketSale WHERE SellTime >='2024-02-05 00:00:00' AND SellTime < '2024-02-06 00:00:00';",
+        function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+        },
+    );
+});

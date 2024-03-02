@@ -8,7 +8,7 @@ router.post("/store", newController.store);
 // router.get("/:slug", newController.show);
 router.get("/:id/edit", newController.edit);
 router.put("/:id", newController.update);
-router.delete("/:id", newController.destroy);
+router.get("/delete/:id", newController.destroy);
 router.get("/", newController.index);
 
 module.exports = router;

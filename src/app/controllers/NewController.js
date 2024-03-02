@@ -3,7 +3,7 @@ const config = require("../../config/db/server");
 
 class NewController {
     // Phương thức GET /news
-    index(req, res, next) {
+    index(req, res) {
         sql.connect(config, (err) => {
             //Câu lệnh sql
             new sql.Request().query("SELECT * FROM student", (err, result) => {
@@ -51,13 +51,13 @@ class NewController {
     edit(req, res) {
         sql.connect(config, (err) => {
             // Câu lệnh sql
+            const userId = parseInt(req.params.id);
             new sql.Request()
                 .input("firstname", sql.NVarChar, req.body.firstname)
                 .input("lastname", sql.NVarChar, req.body.lastname)
                 .input("id", sql.Int, req.params.id)
                 .query(
                     "SELECT * FROM student WHERE id = @id",
-                    // UPDATE student SET firstname = @firstname, lastname = @lastname WHERE id = @id
                     (err, result) => {
                         if (err) {
                             console.error("Lỗi truy vấn:", err);
@@ -70,6 +70,7 @@ class NewController {
                         res.render("users/edit", data);
                     },
                 );
+
         });
     }
     update(req, res) {
@@ -100,7 +101,7 @@ class NewController {
             new sql.Request()
                 .input("id", sql.Int, req.params.id)
                 .query(
-                    "DELETE * FROM student WHERE id = @id",
+                    "DELETE FROM student WHERE id = @id",
                     (err, result) => {
                         if (err) {
                             console.error("Lỗi truy vấn:", err);
@@ -113,6 +114,7 @@ class NewController {
                 );
         });
     }
+    
 }
 
 module.exports = new NewController();
