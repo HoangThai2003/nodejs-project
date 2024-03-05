@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require("mysql");
 const config = require("../../config/db/server");
 
 class LoginController {
@@ -27,7 +27,7 @@ class LoginController {
                 req.user = result.recordset[0]; // Lưu thông tin người dùng vào request
                 next(); // Cho phép tiếp tục vào middleware tiếp theo
             } else {
-                res.status(401).json({ message: "Unauthorized" }); // Gửi mã lỗi 401 nếu đăng nhập không thành công
+                res.status(401).json({message: "Unauthorized"}); // Gửi mã lỗi 401 nếu đăng nhập không thành công
             }
         });
     }

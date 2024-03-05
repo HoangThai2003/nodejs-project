@@ -27,11 +27,15 @@
     "devDependencies": {
         "date-and-time": "^3.1.1",
         "ejs": "^3.1.9",
+        "fs": "^0.0.1-security",
         "morgan": "^1.10.0",
         "mssql": "^10.0.2",
         "mysql": "^2.18.1",
         "mysql2": "^3.9.1",
         "nodemon": "^3.0.3",
+        "path": "^0.12.7",
+        "promise-mysql": "^5.2.0",
+        "stream": "^0.0.2",
         "uuid": "^9.0.1"
     }
 }
