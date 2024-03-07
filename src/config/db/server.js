@@ -7,6 +7,12 @@ const connection = mysql.createConnection({
     password: "Vdsi@2023",
     database: "vebus_log",
 });
+const localconnection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "vebus_log",
+});
 module.exports = {connection};
 
 const stream = require("stream");
@@ -24,7 +30,7 @@ function createBackupJSON(callback) {
             // Lấy dữ liệu từ database
             const uuid = row.UUID;
             const routeId = row.RouteId;
-            // Biến đổi thời gian thanhd chuỗi(DD-MM-YYYY)
+            // Biến đổi thời gian thành chuỗi(DD-MM-YYYY)
             const sellTime = row.SellTime.toISOString().slice(0, 10);
             // Tạo đường dẫn theo dữ liệu(UUID, RouteId, SellTime)
             const backupDirectory = `backup/${uuid}/${routeId}/${sellTime}`;
