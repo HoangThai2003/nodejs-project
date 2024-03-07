@@ -1,8 +1,7 @@
 const express = require("express");
 // Framework tạo header footer mặc định
-const { engine } = require("express-handlebars");
+const {engine} = require("express-handlebars");
 // Hiển thị thêm dòng thông tin lịch sử ở terminal
-const morgan = require("morgan");
 const path = require("path");
 const methodOverride = require("method-override");
 const routes = require("./routes");
@@ -20,10 +19,6 @@ app.use(
 app.use(express.json());
 
 app.use(methodOverride("_method"));
-// Dòng cài đặt hiển thị morgan
-// app.use(morgan('combined'))
-
-// Tạo file mặc định của file handlebars
 app.engine(
     "hbs",
     engine({
