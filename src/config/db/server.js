@@ -90,4 +90,15 @@ connection.connect((err) => {
         console.log("Backup created successfully.");
     });
 });
+
+var cron = require("node-cron");
+cron.schedule(
+    "0 0 * * *",
+    () => {
+        console.log("Daily backup at 12:00");
+    },
+    {
+        timezone: "Asia/Ho_Chi_Minh",
+    },
+);
 // Câu lệnh node src/index.js
