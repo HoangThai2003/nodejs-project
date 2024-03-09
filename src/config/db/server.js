@@ -1,4 +1,7 @@
 const mysql = require("mysql");
+const stream = require("stream");
+const fs = require("fs-extra");
+var cron = require("node-cron");
 
 // Kết nối tới MySQL
 const connection = mysql.createConnection({
@@ -15,66 +18,63 @@ const localconnection = mysql.createConnection({
 });
 module.exports = {connection};
 
-const stream = require("stream");
-const fs = require("fs-extra");
-
 function createBackupJSON(callback) {
-    // Khởi tạo câu lệnh
     const query =
-        // "SELECT * FROM TicketSale WHERE SellTime >='2024-02-05 00:00:00' AND SellTime < '2024-02-06 00:00:00' LIMIT 10";
-        "SELECT * FROM TicketSale WHERE SellTime >='2024-02-05 00:00:00' AND SellTime < '2024-02-06 00:00:00'";
+        "SELECT * FROM TicketSale WHERE SellTime >= ? AND SellTime < ? LIMIT 50";
+    const startTime = new Date("2024-02-05 00:00:00");
+    const endTime = new Date("2024-02-06 00:00:00");
 
-    const transformStream = new stream.Transform({
-        objectMode: true,
-        transform(row, encoding, callback) {
-            // Lấy dữ liệu từ database
-            const uuid = row.UUID;
-            const routeId = row.RouteId;
-            // Biến đổi thời gian thành chuỗi(DD-MM-YYYY)
-            const sellTime = row.SellTime.toISOString().slice(0, 10);
-            // Tạo đường dẫn theo dữ liệu(UUID, RouteId, SellTime)
-            const backupDirectory = `backup/${uuid}/${routeId}/${sellTime}`;
-            // Khởi tạo file bằng npm fs
-            fs.mkdirp(backupDirectory)
-                .then(() => {
-                    // Khởi tạo đường dẫn đến file
-                    const backupFilePath = `${backupDirectory}/backup.json`;
-                    // Dữ liệu truyền vào
-                    return fs.appendFile(
-                        backupFilePath,
-                        JSON.stringify(row) + "\n",
-                    );
+    // Tạo công việc sao lưu hàng ngày vào lúc 12:00
+    cron.schedule(
+        "0 57 9 * * *",
+        () => {
+            const transformStream = new stream.Transform({
+                objectMode: true,
+                transform(row, encoding, callback) {
+                    const uuid = row.UUID;
+                    const routeId = row.RouteId;
+                    const sellTime = row.SellTime.toISOString().slice(0, 10);
+                    const backupDirectory = `backup/${uuid}/${routeId}/${sellTime}`;
+                    fs.mkdirp(backupDirectory)
+                        .then(() => {
+                            const backupFilePath = `${backupDirectory}/data.json`;
+                            return fs.appendFile(
+                                backupFilePath,
+                                JSON.stringify(row) + "\n",
+                            );
+                        })
+                        .then(() => {
+                            console.log(
+                                `Backup JSON created for UUID: ${uuid}`,
+                            );
+                            callback();
+                        })
+                        .catch((err) => {
+                            console.error("Error creating backup:", err);
+                            callback(err);
+                        });
+                },
+            });
+
+            connection
+                .query(query, [startTime, endTime])
+                .stream()
+                .pipe(transformStream)
+                .on("finish", () => {
+                    console.log("Backup completed.");
+                    callback(null);
                 })
-                // Hiển thị quá trình truyền dữ liệu
-                .then(() => {
-                    console.log(`Backup JSON created for UUID: ${uuid}`);
-                    callback();
-                })
-                // Trường hợp khi lỗi
-                .catch((err) => {
+                .on("error", (err) => {
                     console.error("Error creating backup:", err);
                     callback(err);
                 });
         },
-    });
-    // Quá trình thực hiện
-    connection
-        // Truyền sql
-        .query(query)
-        // Đọc và ghi giá trị từ một nguồn
-        .stream()
-        // Truyền dữ liệu từ đầu này sang đầu còn lại
-        .pipe(transformStream)
-        // Khởi tạo sự kiện on
-        .on("finish", () => {
-            console.log("Backup completed.");
-            callback(null);
-        })
-        .on("error", (err) => {
-            console.error("Error creating backup:", err);
-            callback(err);
-        });
+        {
+            timezone: "Asia/Ho_Chi_Minh",
+        },
+    );
 }
+
 // Check lỗi và thông báo thành công
 connection.connect((err) => {
     if (err) {
@@ -91,14 +91,4 @@ connection.connect((err) => {
     });
 });
 
-var cron = require("node-cron");
-cron.schedule(
-    "0 0 * * *",
-    () => {
-        console.log("Daily backup at 12:00");
-    },
-    {
-        timezone: "Asia/Ho_Chi_Minh",
-    },
-);
 // Câu lệnh node src/index.js
