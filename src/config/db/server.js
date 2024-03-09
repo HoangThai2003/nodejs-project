@@ -16,7 +16,6 @@ const localconnection = mysql.createConnection({
     password: "",
     database: "vebus_log",
 });
-module.exports = {connection};
 
 function createBackupJSON(callback) {
     const query =
@@ -26,7 +25,7 @@ function createBackupJSON(callback) {
 
     // Tạo công việc sao lưu hàng ngày vào lúc 12:00
     cron.schedule(
-        "0 57 9 * * *",
+        "0 0 0 * * *",
         () => {
             const transformStream = new stream.Transform({
                 objectMode: true,
